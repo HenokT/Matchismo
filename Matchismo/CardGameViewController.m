@@ -10,6 +10,7 @@
 #import "PlayingCardDeck.h"
 #import "PlayingCard.h"
 #import "CardMatchingGame.h"
+#import "FlipResult.h"
 
 @interface CardGameViewController ()
 
@@ -18,10 +19,13 @@
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (weak, nonatomic) IBOutlet UILabel *resultLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *modeSwitch;
+@property (weak, nonatomic) IBOutlet UISlider *timeMachine;
 
 @property (strong, nonatomic) CardMatchingGame *game;
 @property (nonatomic) int flipCount;
-@property (nonatomic) NSArray * gameModes;
+@property (nonatomic) NSArray * playModes;
+
+@property (nonatomic) UIImage *cardBackImage;
 
 @end
 
@@ -35,9 +39,16 @@
     return _game;
 }
 
--(NSArray *)gameModes{
-    if(!_gameModes) _gameModes=@[[NSNumber  numberWithInt:twoCardMatch],[NSNumber numberWithInt:threeCardMatch]];
-    return _gameModes;
+-(NSArray *)playModes
+{
+    if(!_playModes) _playModes=@[[NSNumber  numberWithInt:TwoCardMatchMode],[NSNumber numberWithInt:ThreeCardMatchMode]];
+    return _playModes;
+}
+
+-(UIImage *)cardBackImage
+{
+    if(!_cardBackImage) _cardBackImage=[UIImage imageNamed:@"cardback.png"];
+    return  _cardBackImage;
 }
 
 - (void)setCardButtons:(NSArray *)cardButtons{
@@ -61,11 +72,36 @@
         [cardButton  setTitle:card.contents
                      forState:UIControlStateSelected|UIControlStateDisabled];
         cardButton.selected=card.isFaceUp;
+        [cardButton setImage:(card.isFaceUp?nil:self.cardBackImage) forState:UIControlStateNormal];
+        cardButton.imageEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
         cardButton.enabled=!card.isUnplayable;
         cardButton.alpha=card.isUnplayable ? 0.3 : 1;
     }
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
-    self.resultLabel.text = self.game.lastFlipResult;
+    self.resultLabel.text = [self stringFromFlipResult:[self.game.flipResults lastObject]];
+    self.resultLabel.alpha=1;
+    if(self.game.flipResults.count + 2 > self.timeMachine.maximumValue){
+        self.timeMachine.maximumValue += 2;
+    }
+    self.timeMachine.value=self.game.flipResults.count;
+}
+
+- (NSString *) stringFromFlipResult:(FlipResult *) flipResult
+{
+    NSString * stringFromFlipResult=@"";
+    if(flipResult){
+        if(flipResult.points > 0){
+            stringFromFlipResult= [NSString stringWithFormat:@"Matched %@ for %d points",[flipResult.cards componentsJoinedByString:@" & "], flipResult.points];
+        }
+        else if(flipResult.points < 0){
+            stringFromFlipResult= [NSString stringWithFormat:@"%@ don't match! %d point penalty!",[flipResult.cards componentsJoinedByString:@" & "], flipResult.points];
+        }
+        else{
+            Card *card=[flipResult.cards lastObject];
+            stringFromFlipResult= [@"Flipped up " stringByAppendingString:card.contents];
+        }
+    }
+    return stringFromFlipResult;
 }
 
 
@@ -91,10 +127,18 @@
 
 - (IBAction)switchMode:(UISegmentedControl *)sender {
    
-    if(sender.selectedSegmentIndex < self.gameModes.count){
-        self.game.mode=[self.gameModes[sender.selectedSegmentIndex] intValue];
+    if(sender.selectedSegmentIndex < self.playModes.count){
+        self.game.playMode=[self.playModes[sender.selectedSegmentIndex] intValue];
     }
-    NSLog(@"Switching Mode to %d", self.game.mode);
+    NSLog(@"Switching Mode to %d", self.game.playMode);
+}
+
+- (IBAction)timeTravel:(UISlider *)sender {
+    int flipResultIndex = sender.value;
+    if(flipResultIndex < self.game.flipResults.count){
+        self.resultLabel.text=[self stringFromFlipResult:self.game.flipResults[flipResultIndex]];
+        self.resultLabel.alpha=0.3;
+    }
 }
 
 @end

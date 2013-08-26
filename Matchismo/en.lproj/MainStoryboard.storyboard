@@ -315,6 +315,13 @@
                                     <action selector="switchMode:" destination="2" eventType="valueChanged" id="Gcx-4a-sKg"/>
                                 </connections>
                             </segmentedControl>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="16" id="2xE-7J-RqJ">
+                                <rect key="frame" x="104" y="389" width="118" height="23"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="timeTravel:" destination="2" eventType="valueChanged" id="T5D-5i-Wvb"/>
+                                </connections>
+                            </slider>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -323,6 +330,7 @@
                         <outlet property="modeSwitch" destination="n6c-9R-iAj" id="oaW-Wn-p37"/>
                         <outlet property="resultLabel" destination="yg6-1g-5hg" id="0Rh-dS-EMg"/>
                         <outlet property="scoreLabel" destination="U2a-HC-yWX" id="IGd-Au-pJp"/>
+                        <outlet property="timeMachine" destination="2xE-7J-RqJ" id="iIm-9f-Qg0"/>
                         <outletCollection property="cardButtons" destination="Ve5-BC-cww" id="Adz-MG-qAC"/>
                         <outletCollection property="cardButtons" destination="D37-6a-UDb" id="Qzk-Mh-KxB"/>
                         <outletCollection property="cardButtons" destination="Abl-WF-TBS" id="92o-77-vq3"/>
@@ -353,10 +361,12 @@
                 <relationship kind="action" name="deal:" candidateClass="UIButton"/>
                 <relationship kind="action" name="flipCard:" candidateClass="UIButton"/>
                 <relationship kind="action" name="switchMode:" candidateClass="UISegmentedControl"/>
+                <relationship kind="action" name="timeTravel:" candidateClass="UISlider"/>
                 <relationship kind="outlet" name="flipsLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="modeSwitch" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="resultLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="scoreLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="timeMachine" candidateClass="UISlider"/>
                 <relationship kind="outletCollection" name="cardButtons" candidateClass="UIButton"/>
             </relationships>
         </class>

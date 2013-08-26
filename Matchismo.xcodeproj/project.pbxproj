@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1483060F17C5C94A001CF975 /* cardback.png in Resources */ = {isa = PBXBuildFile; fileRef = 1483060E17C5C94A001CF975 /* cardback.png */; };
+		14938E8017CA82C400B5CFBA /* FlipResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 14938E7F17CA82C400B5CFBA /* FlipResult.m */; };
 		CFEA414717C05598000DE6CB /* CardMatchingGame.m in Sources */ = {isa = PBXBuildFile; fileRef = CFEA414617C05598000DE6CB /* CardMatchingGame.m */; };
 		CFEB9DC117BE8AC2008FDE17 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFEB9DC017BE8AC2008FDE17 /* UIKit.framework */; };
 		CFEB9DC317BE8AC2008FDE17 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFEB9DC217BE8AC2008FDE17 /* Foundation.framework */; };
@@ -26,6 +28,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1483060E17C5C94A001CF975 /* cardback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cardback.png; sourceTree = "<group>"; };
+		14938E7E17CA82C400B5CFBA /* FlipResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlipResult.h; path = Model/FlipResult.h; sourceTree = "<group>"; };
+		14938E7F17CA82C400B5CFBA /* FlipResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FlipResult.m; path = Model/FlipResult.m; sourceTree = "<group>"; };
 		CFEA414517C05598000DE6CB /* CardMatchingGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CardMatchingGame.h; path = Model/CardMatchingGame.h; sourceTree = "<group>"; };
 		CFEA414617C05598000DE6CB /* CardMatchingGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CardMatchingGame.m; path = Model/CardMatchingGame.m; sourceTree = "<group>"; };
 		CFEB9DBD17BE8AC2008FDE17 /* Matchismo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Matchismo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -98,6 +103,7 @@
 		CFEB9DC617BE8AC2008FDE17 /* Matchismo */ = {
 			isa = PBXGroup;
 			children = (
+				1483060E17C5C94A001CF975 /* cardback.png */,
 				CFEB9DD817BE8AC2008FDE17 /* MainStoryboard.storyboard */,
 				CFEB9DEA17BE9A91008FDE17 /* Model */,
 				CFEB9DDB17BE8AC2008FDE17 /* CardGameViewController.h */,
@@ -136,6 +142,8 @@
 				CFEB9DEF17BF4214008FDE17 /* PlayingCardDeck.m */,
 				CFEA414517C05598000DE6CB /* CardMatchingGame.h */,
 				CFEA414617C05598000DE6CB /* CardMatchingGame.m */,
+				14938E7E17CA82C400B5CFBA /* FlipResult.h */,
+				14938E7F17CA82C400B5CFBA /* FlipResult.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -197,6 +205,7 @@
 				CFEB9DD517BE8AC2008FDE17 /* Default@2x.png in Resources */,
 				CFEB9DD717BE8AC2008FDE17 /* Default-568h@2x.png in Resources */,
 				CFEB9DDA17BE8AC2008FDE17 /* MainStoryboard.storyboard in Resources */,
+				1483060F17C5C94A001CF975 /* cardback.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,6 +224,7 @@
 				CFEB9DED17BF0C70008FDE17 /* PlayingCard.m in Sources */,
 				CFEB9DF017BF4214008FDE17 /* PlayingCardDeck.m in Sources */,
 				CFEA414717C05598000DE6CB /* CardMatchingGame.m in Sources */,
+				14938E8017CA82C400B5CFBA /* FlipResult.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,7 +275,6 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -289,7 +298,6 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
