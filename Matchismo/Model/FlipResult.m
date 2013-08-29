@@ -11,12 +11,12 @@
 @implementation FlipResult
 
 //designated initializer
--(id)initWithCards:(NSArray *) cards AndPoints: (int) flipScore
+-(id)initWithCards:(NSArray *) cards AndPoints: (int) points
 {
     self=[super init];
     if(self){
         _cards=[cards copy];
-        _points=flipScore;
+        _points=points;
     }
     return self;
 }

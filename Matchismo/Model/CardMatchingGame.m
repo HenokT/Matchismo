@@ -13,6 +13,9 @@
 @interface CardMatchingGame  ()
 
 @property (strong, nonatomic) NSMutableArray *cards;
+@property (nonatomic) NSUInteger setCount;
+@property (nonatomic) int matchBonus;
+@property (nonatomic) int mismatchPenalty;
 @property (nonatomic, readwrite) int score;
 @property (strong, nonatomic, readwrite) NSMutableArray *flipResults;
 @end
@@ -32,12 +35,15 @@
     return _flipResults;
 }
 
-
--(id)initWithCardCount:(NSUInteger)cardCount usingDeck:(Deck *)deck
+//designated initiaziser
+-(id)initWithCardCount:(NSUInteger)cardCount deck:(Deck *) deck setCount:(NSUInteger)setCount matchBonus:(int) matchBonus mismatchPenalty:(int) mismatchPenalty
 {
     self=[super init];
     
     if(self){
+        _setCount = setCount;
+        _matchBonus = matchBonus;
+        _mismatchPenalty = mismatchPenalty;
         for (int i=0; i < cardCount; i++) {
             Card * card=[deck drawRandomCard];
             if(card){
@@ -50,7 +56,6 @@
             }
         }
     }
-    self.playMode = TwoCardMatchMode;
     return self;
 }
 
@@ -60,8 +65,6 @@
     return index < [self.cards count] ? self.cards[index] : nil;
 }
 
-#define MATCH_BONUS 4;
-#define MISMATCH_PENALTY 2;
 #define FLIP_COST 1;
 
 -(void)flipCardAtIndex:(NSUInteger)index
@@ -77,10 +80,10 @@
                     [potentialMatches addObject:otherCard];
                 }
             }
-            if((self.playMode==TwoCardMatchMode && potentialMatches.count > 0) || (self.playMode==ThreeCardMatchMode && potentialMatches.count > 1)){
+            if(potentialMatches.count >= self.setCount - 1){
                 int matchScore=[card match:potentialMatches];
                 if(matchScore){
-                    int points=matchScore * MATCH_BONUS;
+                    int points=matchScore * self.matchBonus;
                     self.score += points;
                     card.unblayable = YES;
                     for(Card *otherCard in potentialMatches){                       
@@ -89,7 +92,7 @@
                     flipResult=[[FlipResult alloc] initWithCards:[@[card] arrayByAddingObjectsFromArray: potentialMatches] AndPoints:points];
                 }
                 else{
-                    int points= - MISMATCH_PENALTY;
+                    int points= - self.mismatchPenalty;
                     self.score += points;
                     for(Card *otherCard in potentialMatches){
                         otherCard.faceUp = NO;
