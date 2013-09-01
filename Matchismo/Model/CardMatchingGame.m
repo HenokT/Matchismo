@@ -13,7 +13,7 @@
 @interface CardMatchingGame  ()
 
 @property (strong, nonatomic) NSMutableArray *cards;
-@property (nonatomic) NSUInteger setCount;
+@property (nonatomic) NSUInteger numberOfCardsToMatch;
 @property (nonatomic) int matchBonus;
 @property (nonatomic) int mismatchPenalty;
 @property (nonatomic, readwrite) int score;
@@ -36,12 +36,12 @@
 }
 
 //designated initiaziser
--(id)initWithCardCount:(NSUInteger)cardCount deck:(Deck *) deck setCount:(NSUInteger)setCount matchBonus:(int) matchBonus mismatchPenalty:(int) mismatchPenalty
+-(id)initWithCardCount:(NSUInteger)cardCount deck:(Deck *) deck numberOfCardsToMatch:(NSUInteger)numberOfCardsToMatch matchBonus:(int) matchBonus mismatchPenalty:(int) mismatchPenalty
 {
     self=[super init];
     
     if(self){
-        _setCount = setCount;
+        _numberOfCardsToMatch = numberOfCardsToMatch;
         _matchBonus = matchBonus;
         _mismatchPenalty = mismatchPenalty;
         for (int i=0; i < cardCount; i++) {
@@ -80,7 +80,7 @@
                     [potentialMatches addObject:otherCard];
                 }
             }
-            if(potentialMatches.count >= self.setCount - 1){
+            if(potentialMatches.count >= self.numberOfCardsToMatch - 1){
                 int matchScore=[card match:potentialMatches];
                 if(matchScore){
                     int points=matchScore * self.matchBonus;

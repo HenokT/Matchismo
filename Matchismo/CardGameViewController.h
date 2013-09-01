@@ -7,7 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Deck.h"
+#import "FlipResult.h"
 @interface CardGameViewController : UIViewController
--(NSUInteger) cardButtonsCount;
+
+@property (nonatomic, readonly) NSUInteger numberOfCardsToMatch; //abstract
+@property (nonatomic, readonly) int matchBonus; //abstract
+@property (nonatomic, readonly) int mismatchPenality; //abstract
+
+-(Deck *) createDeck; //abstract
+-(void) updateCardButton:(UIButton *) cardButton withCard:(Card *) card; //abstract
+- (NSAttributedString *) attributedDescriptionOfFlipResult:(FlipResult *) flipResult; 
 @end

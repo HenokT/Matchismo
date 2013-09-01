@@ -11,7 +11,7 @@
 #import "Card.h"
 @interface CardMatchingGame : NSObject
 
--(id)initWithCardCount:(NSUInteger)cardCount deck:(Deck *) deck setCount:(NSUInteger)setCount matchBonus:(int) matchBonus mismatchPenalty:(int) mismatchPenalty;
+-(id)initWithCardCount:(NSUInteger)cardCount deck:(Deck *) deck numberOfCardsToMatch:(NSUInteger)numberOfCardsToMatch matchBonus:(int) matchBonus mismatchPenalty:(int) mismatchPenalty;
 - (void) flipCardAtIndex:(NSUInteger) index;
 - (Card *) cardAtIndex:(NSUInteger) index;
 

@@ -6,32 +6,19 @@
 //  Copyright (c) 2013 Stanford University. All rights reserved.
 //
 
-#import "SetGameViewController.h"
+#import "SetCardGameViewController.h"
 #import "Card.h"
 #import "SetCard.h"
 #import "CardMatchingGame.h"
 #import "SetCardDeck.h"
 #import "FlipResult.h"
 
-@interface SetGameViewController ()
-@property (strong, nonatomic) CardMatchingGame *game;
+@interface SetCardGameViewController ()
 @property (strong, nonatomic) NSDictionary *colors;
 @property (strong, nonatomic) NSDictionary *alphas;
 @end
 
-@implementation SetGameViewController
-
--(CardMatchingGame *)game
-{
-    int matcBonus=4;
-    int mismatchPenalty=2;
-    if(!_game) _game=[[CardMatchingGame  alloc]  initWithCardCount:self.cardButtonsCount
-                                                              deck:[[SetCardDeck alloc] init]
-                                                          setCount:3
-                                                        matchBonus:matcBonus
-                                                   mismatchPenalty:mismatchPenalty];
-    return _game;
-}
+@implementation SetCardGameViewController
 
 -(NSDictionary *)colors
 {
@@ -46,17 +33,40 @@
     return _alphas;
 }
 
+-(Deck *)createDeck
+{
+    return [[SetCardDeck alloc] init];
+}
+
+-(NSUInteger)numberOfCardsToMatch
+{
+    return 3;
+}
+
+-(int)matchBonus
+{
+    return 4;
+}
+
+-(int)mismatchPenality
+{
+    return 2;
+}
+
 
 -(void) updateCardButton:(UIButton *) cardButton withCard:(Card *) card
 {
-    [cardButton setAttributedTitle:[self attributedTitleForCard:(SetCard *)card] forState:UIControlStateNormal];
-    [cardButton setBackgroundImage:[self imageWithColor:[[UIColor grayColor] colorWithAlphaComponent:0.3]] forState:UIControlStateSelected];
-    cardButton.selected=card.isFaceUp;
-    cardButton.enabled=!card.isUnplayable;
-    cardButton.alpha=card.isUnplayable ? 0.1 : 1;
+    if([card isKindOfClass:[SetCard class]]){
+        SetCard * setCard=(SetCard *) card;
+        [cardButton setAttributedTitle:[self attributedTitleOfCard:setCard] forState:UIControlStateNormal];
+        [cardButton setBackgroundImage:[self imageWithColor:[[UIColor grayColor] colorWithAlphaComponent:0.3]] forState:UIControlStateSelected];
+        cardButton.selected=card.isFaceUp;
+        cardButton.enabled=!card.isUnplayable;
+        cardButton.alpha=card.isUnplayable ? 0.1 : 1;
+    }
 }
 
--(NSAttributedString *) attributedTitleForCard:(SetCard *) card
+-(NSAttributedString *) attributedTitleOfCard:(SetCard *) card
 {
     NSString * titleText=[@"" stringByPaddingToLength:card.number withString:card.symbol startingAtIndex:0];
     UIColor *titleStrokeColor = self.colors[card.color];
@@ -79,11 +89,11 @@
     return image;
 }
 
-- (NSAttributedString *) attributedTextForFlipResult:(FlipResult *) flipResult
+- (NSAttributedString *) attributedDescriptionOfFlipResult:(FlipResult *) flipResult
 {
     NSMutableAttributedString * flipResultAttributedText=[[NSMutableAttributedString alloc] init];
     if(flipResult){
-        NSAttributedString *cardsAsAttributedText=[self attributedTitleForCards:flipResult.cards joinedBy:@"&"];
+        NSAttributedString *cardsAsAttributedText=[self attributedTitlesOfCards:flipResult.cards joinedBy:@"&"];
         if(flipResult.points > 0){
             [flipResultAttributedText appendAttributedString:[self attributedStringFromString:@"Matched "]];
             [flipResultAttributedText appendAttributedString:cardsAsAttributedText];
@@ -94,25 +104,27 @@
             [flipResultAttributedText appendAttributedString:[self attributedStringFromString: [NSString stringWithFormat:@" don't match! %d point penalty!",flipResult.points]]];
         }
         else{
-            [flipResultAttributedText appendAttributedString:[self attributedStringFromString:@"Flipped up "]];
+            [flipResultAttributedText appendAttributedString:[self attributedStringFromString:@"Selected "]];
             [flipResultAttributedText appendAttributedString:cardsAsAttributedText];
         }
     }
     return flipResultAttributedText;
 }
 
--(NSAttributedString *)  attributedTitleForCards:(NSArray *) cards joinedBy:(NSString *) aString
+-(NSAttributedString *)  attributedTitlesOfCards:(NSArray *) cards joinedBy:(NSString *) aString
 {
     NSMutableAttributedString *attributedText=[[NSMutableAttributedString alloc] init];
-    for(SetCard *card in cards){
-        if(attributedText.length){
-            [attributedText appendAttributedString:[self attributedStringFromString: aString]];
+    for(Card *card in cards){
+        if([card isKindOfClass:[SetCard class]]){
+            SetCard * setCard=(SetCard *) card;
+            if(attributedText.length){
+                [attributedText appendAttributedString:[self attributedStringFromString: aString]];
+            }
+            [attributedText appendAttributedString:[self attributedTitleOfCard:setCard]];
         }
-        [attributedText appendAttributedString:[self attributedTitleForCard:card]];
     }
     return attributedText;
 }
-
 
 
 - (NSAttributedString *) attributedStringFromString:(NSString *) aString

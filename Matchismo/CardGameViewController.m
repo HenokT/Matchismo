@@ -7,8 +7,7 @@
 //
 
 #import "CardGameViewController.h"
-#import "PlayingCardDeck.h"
-#import "PlayingCard.h"
+#import "Deck.h"
 #import "CardMatchingGame.h"
 #import "FlipResult.h"
 
@@ -24,40 +23,29 @@
 @property (nonatomic) int flipCount;
 @property (nonatomic) NSArray * playModes;
 
-@property (nonatomic) UIImage *cardBackImage;
-
 @end
-
-
-
 
 @implementation CardGameViewController
 
-#define MATCH_BONUS 4;
-#define MISMATCH_PENALTY 2;
 
 -(CardMatchingGame *)game
 {
-    int matcBonus=MATCH_BONUS;
-    int mismatchPenalty=MISMATCH_PENALTY;
-    if(!_game) _game=[[CardMatchingGame  alloc]  initWithCardCount:[self cardButtonsCount]
-                                                              deck:[[PlayingCardDeck alloc] init]
-                                                          setCount:2
-                                                        matchBonus:matcBonus
-                                                   mismatchPenalty:mismatchPenalty];
+    if(!_game) _game=[[CardMatchingGame  alloc]  initWithCardCount:self.startingCardCount
+                                                              deck:[self createDeck]
+                                                          numberOfCardsToMatch:self.numberOfCardsToMatch
+                                                        matchBonus:self.matchBonus
+                                                   mismatchPenalty:self.mismatchPenality];
     return _game;
 }
 
--(NSUInteger) cardButtonsCount
+
+-(NSUInteger) startingCardCount
 {
     return self.cardButtons.count;
 }
 
--(UIImage *)cardBackImage
-{
-    if(!_cardBackImage) _cardBackImage=[UIImage imageNamed:@"cardback.png"];
-    return  _cardBackImage;
-}
+-(Deck *) createDeck { return nil; } //abstract
+
 
 - (void)setCardButtons:(NSArray *)cardButtons{
     _cardButtons=cardButtons;
@@ -79,29 +67,19 @@
         [self updateCardButton:cardButton withCard:card];
     }
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
-    self.resultLabel.attributedText = [self attributedTextForFlipResult:[self.game.flipResults lastObject]];
+    self.resultLabel.attributedText = [self attributedDescriptionOfFlipResult:[self.game.flipResults lastObject]];
     self.resultLabel.alpha=1;
+    //adjust the maximum value for the slider based on the flip result count
     if(self.game.flipResults.count + 2 > self.timeMachine.maximumValue){
         self.timeMachine.maximumValue += 2;
     }
     self.timeMachine.value=self.game.flipResults.count;
 }
 
--(void) updateCardButton:(UIButton *) cardButton withCard:(Card *) card
-{
-    [cardButton  setTitle:card.contents
-                 forState:UIControlStateSelected];
-    [cardButton  setTitle:card.contents
-                 forState:UIControlStateSelected|UIControlStateDisabled];
-    cardButton.selected=card.isFaceUp;
-    [cardButton setImage:(card.isFaceUp?nil:self.cardBackImage) forState:UIControlStateNormal];
-    cardButton.imageEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
-    cardButton.enabled=!card.isUnplayable;
-    cardButton.alpha=card.isUnplayable ? 0.3 : 1;
-}
+-(void)updateCardButton:(UIButton *)cardButton withCard:(Card *)card {} //abstract
 
 
-- (NSAttributedString *) attributedTextForFlipResult:(FlipResult *) flipResult
+- (NSAttributedString *) attributedDescriptionOfFlipResult:(FlipResult *) flipResult
 {
     NSString * flipResultAsText=@"";
     if(flipResult){
@@ -140,8 +118,9 @@
 
 - (IBAction)timeTravel:(UISlider *)sender {
     int flipResultIndex = sender.value;
+    NSLog(@"Traveling to flipResult at index %d:",flipResultIndex);
     if(flipResultIndex < self.game.flipResults.count){
-        self.resultLabel.attributedText=[self attributedTextForFlipResult:self.game.flipResults[flipResultIndex]];
+        self.resultLabel.attributedText=[self attributedDescriptionOfFlipResult:self.game.flipResults[flipResultIndex]];
         self.resultLabel.alpha=0.3;
     }
 }

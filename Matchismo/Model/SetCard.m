@@ -34,7 +34,7 @@
 -(int)match:(NSArray *)otherCards
 {
     int score = 0;
-    if(otherCards.count == 2){
+    if(otherCards.count == 2 && [otherCards[0] isKindOfClass:[self class]] && [otherCards[1] isKindOfClass:[self class]]){
         SetCard *otherCard1=otherCards[0];
         SetCard *otherCard2=otherCards[1];
         BOOL numbersOk = (self.number == otherCard1.number && self.number == otherCard2.number) || (self.number != otherCard1.number && self.number != otherCard2.number);
