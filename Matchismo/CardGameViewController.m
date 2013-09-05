@@ -60,7 +60,7 @@
 
 - (void) updateUI
 {
-    NSLog(@"[%@ updateUI", self.class);
+    //NSLog(@"[%@ updateUI", self.class);
     for(UIButton *cardButton in self.cardButtons)
     {
         Card * card=[self.game cardAtIndex:[self.cardButtons indexOfObject:cardButton]];
