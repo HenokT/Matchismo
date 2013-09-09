@@ -8,21 +8,29 @@
 
 #import "PlayingCardGameViewController.h"
 #import "PlayingCardDeck.h"
+#import "PlayingCardCollectionViewCell.h"
+#import "PlayingCard.h"
+
 @interface PlayingCardGameViewController ()
-@property (nonatomic) UIImage *cardBackImage;
 @end
 
 @implementation PlayingCardGameViewController
 
-- (NSUInteger)numberOfCardsToMatch
+-(NSUInteger)startingCardCount
 {
-    return 2;
+    return 22;
 }
 
 -(Deck *) createDeck
 {
     return [[PlayingCardDeck alloc] init];
 }
+
+- (NSUInteger)numberOfCardsToMatch
+{
+    return 2;
+}
+
 
 -(int)matchBonus
 {
@@ -34,23 +42,30 @@
     return 2;
 }
 
--(void) updateCardButton:(UIButton *) cardButton withCard:(Card *) card
+
+-(void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card animate:(BOOL)animate
 {
-    [cardButton  setTitle:card.contents
-                 forState:UIControlStateSelected];
-    [cardButton  setTitle:card.contents
-                 forState:UIControlStateSelected|UIControlStateDisabled];
-    cardButton.selected=card.isFaceUp;
-    [cardButton setImage:(card.isFaceUp?nil:self.cardBackImage) forState:UIControlStateNormal];
-    cardButton.imageEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
-    cardButton.enabled=!card.isUnplayable;
-    cardButton.alpha=card.isUnplayable ? 0.3 : 1;
+    if([cell isKindOfClass:[PlayingCardCollectionViewCell class]] && [card isKindOfClass:[PlayingCard class]]){
+        PlayingCardView *playingCardView = ((PlayingCardCollectionViewCell *) cell).playingCardView;
+        PlayingCard *playingCard=(PlayingCard *) card;
+        playingCardView.rank = playingCard.rank;
+        playingCardView.suit = playingCard.suit;
+        playingCardView.alpha = playingCard.isUnplayable ? 0.3 : 1.0;
+        if(animate){
+        [UIView transitionWithView:playingCardView
+                          duration:0.5
+                           options:UIViewAnimationOptionTransitionFlipFromLeft
+                        animations:^{
+                             playingCardView.faceUp = playingCard.faceUp;
+                        }
+                        completion:NULL];
+        }
+        else{
+            playingCardView.faceUp = playingCard.faceUp;
+        }
+
+    }
 }
 
--(UIImage *)cardBackImage
-{
-    if(!_cardBackImage) _cardBackImage=[UIImage imageNamed:@"cardback.png"];
-    return  _cardBackImage;
-}
 
 @end

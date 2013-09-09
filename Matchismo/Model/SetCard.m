@@ -17,7 +17,7 @@
 
 +(NSArray *) validSymbols
 {
-    return @[@"▲", @"●", @"■"];
+    return @[@"diamond", @"squiggle", @"oval"];
 }
 
 +(NSArray *) validShadings
@@ -82,4 +82,6 @@
         _color = color;
     }
 }
+
+//Implement isEqual
 @end

@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 
 @interface FlipResult : NSObject
-@property (strong, nonatomic, readonly) NSArray * cards;
+@property (strong, nonatomic, readonly) NSArray * cardsInvolved;
 @property (nonatomic, readonly) int points;
 
 //designated initializer
--(id)initWithCards:(NSArray *) cards AndPoints: (int) flipScore;
+-(id)initWithCardsInvolved:(NSArray *) cardsInvolved forPoints: (int) flipScore;
 @end

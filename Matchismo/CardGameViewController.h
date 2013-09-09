@@ -11,11 +11,14 @@
 #import "FlipResult.h"
 @interface CardGameViewController : UIViewController
 
+@property (nonatomic, readonly) NSUInteger startingCardCount; //abstract
 @property (nonatomic, readonly) NSUInteger numberOfCardsToMatch; //abstract
 @property (nonatomic, readonly) int matchBonus; //abstract
 @property (nonatomic, readonly) int mismatchPenality; //abstract
 
 -(Deck *) createDeck; //abstract
--(void) updateCardButton:(UIButton *) cardButton withCard:(Card *) card; //abstract
-- (NSAttributedString *) attributedDescriptionOfFlipResult:(FlipResult *) flipResult; 
+-(void) updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card animate:(BOOL)animate; //abstract
+
+- (NSAttributedString *) attributedDescriptionOfFlipResult:(FlipResult *) flipResult;
+
 @end

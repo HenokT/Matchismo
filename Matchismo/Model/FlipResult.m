@@ -11,11 +11,11 @@
 @implementation FlipResult
 
 //designated initializer
--(id)initWithCards:(NSArray *) cards AndPoints: (int) points
+-(id)initWithCardsInvolved:(NSArray *) cardsInvolved forPoints: (int) points
 {
     self=[super init];
     if(self){
-        _cards=[cards copy];
+        _cardsInvolved=[cardsInvolved copy];
         _points=points;
     }
     return self;

@@ -18,6 +18,10 @@
 @property (nonatomic) int mismatchPenalty;
 @property (nonatomic, readwrite) int score;
 @property (strong, nonatomic, readwrite) NSMutableArray *flipResults;
+@property (strong, nonatomic) Deck *deck;
+@property (nonatomic) BOOL deckEmpty;
+@property (nonatomic) NSUInteger numberOfCardsInPlay;
+
 @end
 
 @implementation CardMatchingGame
@@ -44,14 +48,15 @@
         _numberOfCardsToMatch = numberOfCardsToMatch;
         _matchBonus = matchBonus;
         _mismatchPenalty = mismatchPenalty;
+        _deck = deck;
+        _deckEmpty = NO;
         for (int i=0; i < cardCount; i++) {
             Card * card=[deck drawRandomCard];
             if(card){
-                //self.cards[i]=card;
                 [self.cards addObject:card];
             }
             else{
-                self=nil;
+                self = nil;
                 break;
             }
         }
@@ -64,6 +69,38 @@
 {
     return index < [self.cards count] ? self.cards[index] : nil;
 }
+
+-(NSUInteger) indexOfCard:(Card *) card 
+{
+    return [self.cards indexOfObject:card];
+}
+
+-(void) removeCards:(NSArray *) cards
+{
+    [self.cards removeObjectsInArray:cards];
+}
+
+
+-(void) addMoreCardsToPlay:(NSUInteger) cardCount
+{
+    for (int i = 0; i < cardCount; i++)
+    {
+        Card * card=[self.deck drawRandomCard];
+        if(card){
+            [self.cards addObject:card];
+        }
+        else{
+            self.deckEmpty = YES;
+        }
+    }
+}
+
+
+-(NSUInteger)numberOfCardsInPlay
+{
+    return self.cards.count;
+}
+
 
 #define FLIP_COST 1;
 
@@ -89,7 +126,7 @@
                     for(Card *otherCard in potentialMatches){                       
                         otherCard.unblayable = YES;
                     }
-                    flipResult=[[FlipResult alloc] initWithCards:[@[card] arrayByAddingObjectsFromArray: potentialMatches] AndPoints:points];
+                    flipResult=[[FlipResult alloc] initWithCardsInvolved:[@[card] arrayByAddingObjectsFromArray: potentialMatches] forPoints:points];
                 }
                 else{
                     int points= - self.mismatchPenalty;
@@ -97,11 +134,13 @@
                     for(Card *otherCard in potentialMatches){
                         otherCard.faceUp = NO;
                     }
-                    flipResult=[[FlipResult alloc] initWithCards:[@[card] arrayByAddingObjectsFromArray:potentialMatches] AndPoints:points];
+                    flipResult=[[FlipResult alloc] initWithCardsInvolved:[@[card] arrayByAddingObjectsFromArray:potentialMatches] forPoints:points];
                 }
             }
-            if(!flipResult) flipResult=[[FlipResult alloc] initWithCards:@[card] AndPoints:0];
+            
+            if(!flipResult) flipResult=[[FlipResult alloc] initWithCardsInvolved:[@[card] arrayByAddingObjectsFromArray:potentialMatches]forPoints:0];
             [self.flipResults addObject:flipResult];
+            
             self.score -= FLIP_COST;
         }
         card.faceUp=!card.isFaceUp;

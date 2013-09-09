@@ -12,11 +12,12 @@
 #import "CardMatchingGame.h"
 #import "SetCardDeck.h"
 #import "FlipResult.h"
+#import "SetCardCollectionViewCell.h"
 
 @interface SetCardGameViewController ()
 @property (strong, nonatomic) NSDictionary *colors;
 @property (strong, nonatomic) NSDictionary *alphas;
-@property (strong, nonatomic) UIImage *selectedCardBackgroundImage;
+
 @end
 
 @implementation SetCardGameViewController
@@ -31,6 +32,11 @@
 {
     if(!_alphas) _alphas=@{@"solid":@(0), @"striped":@(0.3), @"open":@(1)};
     return _alphas;
+}
+
+-(NSUInteger)startingCardCount
+{
+    return 12;
 }
 
 -(Deck *)createDeck
@@ -53,45 +59,19 @@
     return 2;
 }
 
--(UIImage *)selectedCardBackgroundImage
-{
-    if(!_selectedCardBackgroundImage) _selectedCardBackgroundImage=[self imageWithColor:[[UIColor grayColor] colorWithAlphaComponent:0.3]];
-    return _selectedCardBackgroundImage;
-}
 
-- (UIImage *)imageWithColor:(UIColor *)color {
-    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-    
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
-}
-
--(void) updateCardButton:(UIButton *) cardButton withCard:(Card *) card
+-(void) updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card animate:(BOOL)animate; //abstract
 {
-    if([card isKindOfClass:[SetCard class]]){
-        SetCard * setCard=(SetCard *) card;
-        [cardButton setAttributedTitle:[self attributedTitleOfCard:setCard] forState:UIControlStateNormal];
-        [cardButton setBackgroundImage:self.selectedCardBackgroundImage forState:UIControlStateSelected];
-        cardButton.selected=card.isFaceUp;
-        cardButton.enabled=!card.isUnplayable;
-        cardButton.alpha=card.isUnplayable ? 0.1 : 1;
+    if([cell isKindOfClass:[SetCardCollectionViewCell class]] && [card isKindOfClass:[SetCard class]]){
+        SetCardVew *setCardView = ((SetCardCollectionViewCell *) cell).setCardView;
+        SetCard *setCard = (SetCard *) card;
+        setCardView.number = setCard.number;
+        setCardView.symbol = setCard.symbol;
+        setCardView.shading = setCard.shading;
+        setCardView.color = setCard.color;
+        setCardView.faceUp = setCard.faceUp;
+        setCardView.alpha = setCard.isUnplayable ? 0.1 : 1;
     }
-}
-
--(NSAttributedString *) attributedTitleOfCard:(SetCard *) card
-{
-    NSString * titleText=[@"" stringByPaddingToLength:card.number withString:card.symbol startingAtIndex:0];
-    UIColor *titleStrokeColor = self.colors[card.color];
-    UIColor *titleForegroundColor = [titleStrokeColor colorWithAlphaComponent:[self.alphas[card.shading] floatValue]];
-    NSDictionary *titleAttributes=@{ NSStrokeWidthAttributeName : @-5, NSStrokeColorAttributeName : titleStrokeColor, NSForegroundColorAttributeName : titleForegroundColor};
-    return [[NSMutableAttributedString alloc] initWithString:titleText attributes:titleAttributes];
 }
 
 
@@ -99,7 +79,7 @@
 {
     NSMutableAttributedString * flipResultAttributedText=[[NSMutableAttributedString alloc] init];
     if(flipResult){
-        NSAttributedString *cardsAsAttributedText=[self attributedTitlesOfCards:flipResult.cards joinedBy:@" & "];
+        NSAttributedString *cardsAsAttributedText=[self attributedTitlesOfCards:flipResult.cardsInvolved joinedBy:@" & "];
         if(flipResult.points > 0){
             [flipResultAttributedText appendAttributedString:[self attributedStringFromString:@"Matched "]];
             [flipResultAttributedText appendAttributedString:cardsAsAttributedText];
@@ -130,6 +110,15 @@
         }
     }
     return attributedText;
+}
+
+-(NSAttributedString *) attributedTitleOfCard:(SetCard *) card
+{
+    NSString * titleText=[@"" stringByPaddingToLength:card.number withString:card.symbol startingAtIndex:0];
+    UIColor *titleStrokeColor = self.colors[card.color];
+    UIColor *titleForegroundColor = [titleStrokeColor colorWithAlphaComponent:[self.alphas[card.shading] floatValue]];
+    NSDictionary *titleAttributes=@{ NSStrokeWidthAttributeName : @-5, NSStrokeColorAttributeName : titleStrokeColor, NSForegroundColorAttributeName : titleForegroundColor};
+    return [[NSMutableAttributedString alloc] initWithString:titleText attributes:titleAttributes];
 }
 
 

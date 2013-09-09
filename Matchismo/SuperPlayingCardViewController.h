@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SuperCardViewController : UIViewController
+@interface SuperPlayingCardViewController : UIViewController
 
 @end
