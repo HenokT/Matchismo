@@ -60,7 +60,7 @@
 }
 
 
--(void) updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card animate:(BOOL)animate; //abstract
+- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card alwaysFaceUp:(BOOL)alwaysFaceUp //abstract
 {
     if([cell isKindOfClass:[SetCardCollectionViewCell class]] && [card isKindOfClass:[SetCard class]]){
         SetCardVew *setCardView = ((SetCardCollectionViewCell *) cell).setCardView;
@@ -69,62 +69,9 @@
         setCardView.symbol = setCard.symbol;
         setCardView.shading = setCard.shading;
         setCardView.color = setCard.color;
-        setCardView.faceUp = setCard.faceUp;
-        setCardView.alpha = setCard.isUnplayable ? 0.1 : 1;
+        setCardView.faceUp = alwaysFaceUp || setCard.faceUp;
+        //setCardView.alpha = setCard.isUnplayable ? 0.1 : 1;
     }
-}
-
-
-- (NSAttributedString *) attributedDescriptionOfFlipResult:(FlipResult *) flipResult
-{
-    NSMutableAttributedString * flipResultAttributedText=[[NSMutableAttributedString alloc] init];
-    if(flipResult){
-        NSAttributedString *cardsAsAttributedText=[self attributedTitlesOfCards:flipResult.cardsInvolved joinedBy:@" & "];
-        if(flipResult.points > 0){
-            [flipResultAttributedText appendAttributedString:[self attributedStringFromString:@"Matched "]];
-            [flipResultAttributedText appendAttributedString:cardsAsAttributedText];
-            [flipResultAttributedText appendAttributedString:[self attributedStringFromString:[NSString stringWithFormat: @" for %d points", flipResult.points]]];
-        }
-        else if(flipResult.points < 0){
-            [flipResultAttributedText appendAttributedString:cardsAsAttributedText];
-            [flipResultAttributedText appendAttributedString:[self attributedStringFromString: [NSString stringWithFormat:@" don't match! %d point penalty!",flipResult.points]]];
-        }
-        else{
-            [flipResultAttributedText appendAttributedString:[self attributedStringFromString:@"Selected "]];
-            [flipResultAttributedText appendAttributedString:cardsAsAttributedText];
-        }
-    }
-    return flipResultAttributedText;
-}
-
--(NSAttributedString *)  attributedTitlesOfCards:(NSArray *) cards joinedBy:(NSString *) aString
-{
-    NSMutableAttributedString *attributedText=[[NSMutableAttributedString alloc] init];
-    for(Card *card in cards){
-        if([card isKindOfClass:[SetCard class]]){
-            SetCard * setCard=(SetCard *) card;
-            if(attributedText.length){
-                [attributedText appendAttributedString:[self attributedStringFromString: aString]];
-            }
-            [attributedText appendAttributedString:[self attributedTitleOfCard:setCard]];
-        }
-    }
-    return attributedText;
-}
-
--(NSAttributedString *) attributedTitleOfCard:(SetCard *) card
-{
-    NSString * titleText=[@"" stringByPaddingToLength:card.number withString:card.symbol startingAtIndex:0];
-    UIColor *titleStrokeColor = self.colors[card.color];
-    UIColor *titleForegroundColor = [titleStrokeColor colorWithAlphaComponent:[self.alphas[card.shading] floatValue]];
-    NSDictionary *titleAttributes=@{ NSStrokeWidthAttributeName : @-5, NSStrokeColorAttributeName : titleStrokeColor, NSForegroundColorAttributeName : titleForegroundColor};
-    return [[NSMutableAttributedString alloc] initWithString:titleText attributes:titleAttributes];
-}
-
-
-- (NSAttributedString *) attributedStringFromString:(NSString *) aString
-{
-    return [[NSAttributedString alloc] initWithString:aString];
 }
 
 @end

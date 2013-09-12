@@ -17,8 +17,7 @@
 @property (nonatomic, readonly) int mismatchPenality; //abstract
 
 -(Deck *) createDeck; //abstract
--(void) updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card animate:(BOOL)animate; //abstract
+- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card alwaysFaceUp:(BOOL)alwaysFaceUp; //abstract
 
-- (NSAttributedString *) attributedDescriptionOfFlipResult:(FlipResult *) flipResult;
 
 @end

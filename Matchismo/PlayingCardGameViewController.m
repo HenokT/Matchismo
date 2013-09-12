@@ -43,26 +43,15 @@
 }
 
 
--(void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card animate:(BOOL)animate
+- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card alwaysFaceUp:(BOOL)alwaysFaceUp
 {
     if([cell isKindOfClass:[PlayingCardCollectionViewCell class]] && [card isKindOfClass:[PlayingCard class]]){
         PlayingCardView *playingCardView = ((PlayingCardCollectionViewCell *) cell).playingCardView;
         PlayingCard *playingCard=(PlayingCard *) card;
         playingCardView.rank = playingCard.rank;
         playingCardView.suit = playingCard.suit;
-        playingCardView.alpha = playingCard.isUnplayable ? 0.3 : 1.0;
-        if(animate){
-        [UIView transitionWithView:playingCardView
-                          duration:0.5
-                           options:UIViewAnimationOptionTransitionFlipFromLeft
-                        animations:^{
-                             playingCardView.faceUp = playingCard.faceUp;
-                        }
-                        completion:NULL];
-        }
-        else{
-            playingCardView.faceUp = playingCard.faceUp;
-        }
+        //playingCardView.alpha = playingCard.isUnplayable ? 0.3 : 1.0;
+        playingCardView.faceUp = alwaysFaceUp || playingCard.faceUp;
 
     }
 }
